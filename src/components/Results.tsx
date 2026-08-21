@@ -59,8 +59,8 @@ export default function Results({
         </span>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-zinc-200">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-lg border border-zinc-200">
+        <table className="w-full min-w-[32rem] text-left text-sm">
           <thead className="bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500">
             <tr>
               <th className="px-3 py-2 font-medium">Heir</th>
@@ -126,12 +126,12 @@ export default function Results({
           </h3>
           <ul className="space-y-1 text-sm text-zinc-600">
             {result.blocked.map((b) => (
-              <li key={b.key} className="flex justify-between gap-4">
+              <li key={b.key} className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
                 <span>
                   {b.label}
                   {b.count > 1 && <span className="ml-1 text-zinc-400">×{b.count}</span>}
                 </span>
-                <span className="text-right text-xs text-zinc-500">{b.reason}</span>
+                <span className="text-xs text-zinc-500 sm:text-right">{b.reason}</span>
               </li>
             ))}
           </ul>

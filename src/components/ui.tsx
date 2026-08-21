@@ -23,7 +23,7 @@ export function Toggle({
           : "border-zinc-200 bg-white hover:border-zinc-300"
       }`}
     >
-      <span>
+      <span className="min-w-0">
         <span className="block text-sm font-medium text-zinc-900">{label}</span>
         {hint && <span className="block text-xs text-zinc-500">{hint}</span>}
       </span>
@@ -64,16 +64,16 @@ export function Stepper({
         value > 0 ? "border-emerald-500 bg-emerald-50" : "border-zinc-200 bg-white"
       }`}
     >
-      <span>
+      <span className="min-w-0">
         <span className="block text-sm font-medium text-zinc-900">{label}</span>
         {hint && <span className="block text-xs text-zinc-500">{hint}</span>}
       </span>
-      <span className="flex items-center gap-2">
+      <span className="flex shrink-0 items-center gap-2">
         <button
           type="button"
           aria-label={`Decrease ${label}`}
           onClick={() => set(value - 1)}
-          className="h-8 w-8 rounded-md border border-zinc-300 bg-white text-lg font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-40"
+          className="h-9 w-9 rounded-md border border-zinc-300 bg-white text-lg font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-40"
           disabled={value <= min}
         >
           -
@@ -88,7 +88,7 @@ export function Stepper({
           type="button"
           aria-label={`Increase ${label}`}
           onClick={() => set(value + 1)}
-          className="h-8 w-8 rounded-md border border-zinc-300 bg-white text-lg font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-40"
+          className="h-9 w-9 rounded-md border border-zinc-300 bg-white text-lg font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-40"
           disabled={value >= max}
         >
           +

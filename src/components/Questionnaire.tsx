@@ -157,9 +157,9 @@ export default function Questionnaire() {
     <div className="w-full">
       {/* Progress */}
       <div className="mb-6">
-        <div className="mb-2 flex items-center justify-between text-xs font-medium text-zinc-500">
-          <span>{onResults ? "Results" : `Step ${step + 1} of ${totalQuestions}`}</span>
-          <span>{onResults ? "Done" : steps[step].title}</span>
+        <div className="mb-2 flex items-center justify-between gap-2 text-xs font-medium text-zinc-500">
+          <span className="shrink-0">{onResults ? "Results" : `Step ${step + 1} of ${totalQuestions}`}</span>
+          <span className="truncate text-right">{onResults ? "Done" : steps[step].title}</span>
         </div>
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
           <div
@@ -169,7 +169,7 @@ export default function Questionnaire() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
         {!onResults ? (
           <>
             <h2 className="text-lg font-semibold text-zinc-900">{steps[step].title}</h2>
