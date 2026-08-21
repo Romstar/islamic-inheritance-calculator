@@ -1,8 +1,10 @@
 # Islamic Inheritance Calculator
 
-A web app that calculates Islamic inheritance (Faraid) shares. Enter the
-surviving heirs. The app shows each fixed share (fard) and the residue
-(asaba). It applies 'awl (increase) and radd (return) when needed.
+A static web app that calculates Islamic inheritance (Faraid) shares. A
+step-by-step questionnaire asks about the surviving relatives. The app then
+shows the fraction, percentage, and amount for each individual heir. It applies
+fixed shares (furud), residue (asaba), blocking (hajb), 'awl (increase), and
+radd (return).
 
 ## Stack
 
@@ -16,15 +18,20 @@ The app is fully client-side. `next build` writes static HTML, CSS, and JS to
 
 ## Supported heirs
 
-- Husband or wives (up to 4)
-- Father and mother
-- Sons and daughters
-- Full (germane) brothers and sisters
-- Maternal (uterine) siblings
+The engine covers the full classic set of heirs:
 
-The engine does not cover grandparents, grandchildren, or consanguine
-siblings. Use the tool for education only. It is not a religious or legal
-ruling.
+- Husband or wives (up to 4)
+- Father, mother, paternal grandfather, and grandmothers (paternal and maternal)
+- Sons, daughters, grandsons, and granddaughters (son's line)
+- Full, paternal half (consanguine), and maternal (uterine) siblings
+- Extended agnates: brothers' sons, paternal uncles, and their sons
+
+### Notes on rulings
+
+- The paternal grandfather follows the Hanafi position: he blocks all siblings,
+  exactly as the father does.
+- Grandparents and grandchildren cover one generation each.
+- Use the tool for education only. It is not a religious or legal ruling.
 
 ## Development
 
