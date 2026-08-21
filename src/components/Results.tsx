@@ -48,7 +48,8 @@ export default function Results({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="grid gap-6 lg:grid-cols-3">
+      <div className="space-y-5 lg:col-span-2">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-zinc-900">Inheritance shares</h2>
         <span
@@ -115,7 +116,9 @@ export default function Results({
           </tfoot>
         </table>
       </div>
+      </div>
 
+      <aside className="space-y-5">
       {result.blocked.length > 0 && (
         <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
           <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
@@ -151,6 +154,7 @@ export default function Results({
         follows the Hanafi rule (he blocks siblings). This tool is for education,
         not a religious or legal ruling.
       </p>
+      </aside>
     </div>
   );
 }

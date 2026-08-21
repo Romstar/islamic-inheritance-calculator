@@ -72,7 +72,7 @@ export default function Questionnaire() {
       title: "Children",
       subtitle: "How many surviving sons and daughters?",
       render: () => (
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <Stepper label="Sons" hint="Each son takes twice a daughter's share" value={heirs.sons} onChange={(v) => set("sons", v)} />
           <Stepper label="Daughters" value={heirs.daughters} onChange={(v) => set("daughters", v)} />
         </div>
@@ -83,7 +83,7 @@ export default function Questionnaire() {
       title: "Grandchildren",
       subtitle: "Children of a son (the son's line). Skip if not applicable.",
       render: () => (
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <Stepper label="Grandsons (son's sons)" value={heirs.grandsons} onChange={(v) => set("grandsons", v)} />
           <Stepper label="Granddaughters (son's daughters)" value={heirs.granddaughters} onChange={(v) => set("granddaughters", v)} />
         </div>
@@ -94,7 +94,7 @@ export default function Questionnaire() {
       title: "Parents",
       subtitle: "Which parents survive the deceased?",
       render: () => (
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <Toggle label="Father" checked={heirs.father} onChange={(v) => set("father", v)} />
           <Toggle label="Mother" checked={heirs.mother} onChange={(v) => set("mother", v)} />
         </div>
@@ -105,7 +105,7 @@ export default function Questionnaire() {
       title: "Grandparents",
       subtitle: "Surviving grandparents. A parent blocks the grandparent on that side.",
       render: () => (
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Toggle label="Paternal grandfather (father's father)" checked={heirs.paternalGrandfather} onChange={(v) => set("paternalGrandfather", v)} />
           <Toggle label="Paternal grandmother (father's mother)" checked={heirs.paternalGrandmother} onChange={(v) => set("paternalGrandmother", v)} />
           <Toggle label="Maternal grandmother (mother's mother)" checked={heirs.maternalGrandmother} onChange={(v) => set("maternalGrandmother", v)} />
@@ -117,7 +117,7 @@ export default function Questionnaire() {
       title: "Siblings",
       subtitle: "Full, paternal half, and maternal (uterine) siblings.",
       render: () => (
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Stepper label="Full brothers" value={heirs.fullBrothers} onChange={(v) => set("fullBrothers", v)} />
           <Stepper label="Full sisters" value={heirs.fullSisters} onChange={(v) => set("fullSisters", v)} />
           <Stepper label="Paternal half-brothers (same father)" value={heirs.paternalBrothers} onChange={(v) => set("paternalBrothers", v)} />
@@ -131,7 +131,7 @@ export default function Questionnaire() {
       title: "Extended relatives",
       subtitle: "Distant male relatives. They inherit only when no closer heir does.",
       render: () => (
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Stepper label="Full brothers' sons (nephews)" value={heirs.fullNephews} onChange={(v) => set("fullNephews", v)} />
           <Stepper label="Paternal half-brothers' sons" value={heirs.paternalNephews} onChange={(v) => set("paternalNephews", v)} />
           <Stepper label="Full paternal uncles" value={heirs.fullUncles} onChange={(v) => set("fullUncles", v)} />
@@ -154,7 +154,7 @@ export default function Questionnaire() {
   const estateValue = Number(estate) || 0;
 
   return (
-    <div className="mx-auto w-full max-w-2xl">
+    <div className="w-full">
       {/* Progress */}
       <div className="mb-6">
         <div className="mb-2 flex items-center justify-between text-xs font-medium text-zinc-500">
@@ -196,7 +196,7 @@ export default function Questionnaire() {
           </>
         ) : (
           <>
-            <div className="mb-5">
+            <div className="mb-5 max-w-sm">
               <label htmlFor="estate" className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 Estate value (optional)
               </label>
