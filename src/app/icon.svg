@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title id="title">Islamic Inheritance Calculator</title>
+  <rect width="32" height="32" rx="8" fill="#1c5e3a"/>
+  <path fill="#f5ecdb" d="M7 22V10h3.2l4.1 8.2L18.4 10H22v12h-2.8v-7.3L15.6 22h-2.7l-3.6-7.3V22H7z"/>
+</svg>
