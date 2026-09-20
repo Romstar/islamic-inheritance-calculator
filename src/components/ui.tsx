@@ -42,6 +42,50 @@ export function Toggle({
   );
 }
 
+export function MoneyField({
+  id,
+  label,
+  hint,
+  value,
+  invalid,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  value: string;
+  invalid?: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="space-y-1">
+      <label htmlFor={id} className="block text-sm font-medium text-zinc-900">
+        {label}
+      </label>
+      {hint && <p className="text-xs text-zinc-500">{hint}</p>}
+      <div
+        className={`flex items-center gap-2 rounded-lg border bg-white px-4 py-3 ${
+          invalid ? "border-amber-400" : "border-zinc-200"
+        }`}
+      >
+        <span className="text-sm text-zinc-500">$</span>
+        <input
+          id={id}
+          type="text"
+          inputMode="decimal"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="w-full bg-transparent text-base text-zinc-900 outline-none"
+          placeholder="0"
+        />
+      </div>
+      {invalid && (
+        <p className="text-xs text-amber-800">Enter a valid amount of 0 or more.</p>
+      )}
+    </div>
+  );
+}
+
 export function Stepper({
   label,
   hint,

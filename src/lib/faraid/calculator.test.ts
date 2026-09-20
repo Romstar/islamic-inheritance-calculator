@@ -304,6 +304,91 @@ describe("extended agnates", () => {
   });
 });
 
+describe("classic extra cases", () => {
+  it("wife takes 1/4 with no descendants", () => {
+    const r = calculate(input({ wives: 1, fullBrothers: 1 }));
+    expect(shareOf("wives", r)).toBe("1/4");
+    expect(shareOf("fullBrothers", r)).toBe("3/4");
+  });
+
+  it("four wives share 1/4 equally", () => {
+    const r = calculate(input({ wives: 4, father: true }));
+    const wife = r.shares.find((s) => s.key === "wives")!;
+    expect(toText(wife.share)).toBe("1/4");
+    expect(toText(wife.perPerson)).toBe("1/16");
+  });
+
+  it("single uterine sibling takes 1/6", () => {
+    const r = calculate(input({ maternalSiblings: 1, fullBrothers: 1 }));
+    expect(shareOf("maternalSiblings", r)).toBe("1/6");
+    expect(shareOf("fullBrothers", r)).toBe("5/6");
+  });
+
+  it("mother takes 1/3 with one sibling and no descendant", () => {
+    const r = calculate(input({ mother: true, fullBrothers: 1 }));
+    expect(shareOf("mother", r)).toBe("1/3");
+    expect(shareOf("fullBrothers", r)).toBe("2/3");
+  });
+
+  it("husband and one daughter: husband 1/4, daughter takes the rest by radd", () => {
+    const r = calculate(input({ husband: true, daughters: 1 }));
+    expect(r.method).toBe("radd");
+    expect(shareOf("husband", r)).toBe("1/4");
+    expect(shareOf("daughters", r)).toBe("3/4");
+    expectSumsToOne(r);
+  });
+
+  it("two daughters alone take the whole estate by radd", () => {
+    const r = calculate(input({ daughters: 2 }));
+    expect(r.method).toBe("radd");
+    expect(shareOf("daughters", r)).toBe("1");
+  });
+
+  it("one granddaughter with no children takes 1/2 then radd", () => {
+    const r = calculate(input({ granddaughters: 1 }));
+    expect(shareOf("granddaughters", r)).toBe("1");
+    expect(r.method).toBe("radd");
+  });
+
+  it("paternal grandmother takes 1/6 when parents are absent", () => {
+    const r = calculate(input({ paternalGrandmother: true, sons: 1 }));
+    expect(shareOf("paternalGrandmother", r)).toBe("1/6");
+    expect(shareOf("sons", r)).toBe("5/6");
+  });
+
+  it("father with one daughter: daughter 1/2, father 1/6 plus residue", () => {
+    const r = calculate(input({ father: true, daughters: 1 }));
+    expect(shareOf("daughters", r)).toBe("1/2");
+    expect(shareOf("father", r)).toBe("1/2");
+  });
+
+  it("Hanafi: paternal grandfather blocks siblings", () => {
+    const r = calculate(input({ paternalGrandfather: true, fullBrothers: 2, fullSisters: 1 }));
+    expect(shareOf("paternalGrandfather", r)).toBe("1");
+    expect(isBlocked("fullBrothers", r)).toBe(true);
+    expect(isBlocked("fullSisters", r)).toBe(true);
+  });
+
+  it("two full sisters take 2/3; uncle takes residue", () => {
+    const r = calculate(input({ fullSisters: 2, fullUncles: 1 }));
+    expect(shareOf("fullSisters", r)).toBe("2/3");
+    expect(shareOf("fullUncles", r)).toBe("1/3");
+    expectSumsToOne(r);
+  });
+
+  it("paternal sister takes 1/2 as a Quranic heir", () => {
+    const r = calculate(input({ paternalSisters: 1, fullNephews: 1 }));
+    expect(shareOf("paternalSisters", r)).toBe("1/2");
+    expect(shareOf("fullNephews", r)).toBe("1/2");
+  });
+
+  it("full brother's son is blocked by a full brother", () => {
+    const r = calculate(input({ fullBrothers: 1, fullNephews: 2 }));
+    expect(shareOf("fullBrothers", r)).toBe("1");
+    expect(isBlocked("fullNephews", r)).toBe(true);
+  });
+});
+
 describe("invariant: shares always sum to one", () => {
   const scenarios: Partial<HeirInput>[] = [
     { husband: true, father: true, mother: true, sons: 2, daughters: 3 },
