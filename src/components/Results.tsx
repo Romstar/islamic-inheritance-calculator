@@ -6,12 +6,21 @@ import { allocateAmounts, formatMoney, parseMoneyField } from "@/lib/faraid/mone
 import { SCHOOLS, type SchoolId } from "@/lib/faraid/schools";
 import type { HeirInput } from "@/lib/faraid/types";
 import { isZero, toPercent, toText } from "@/lib/faraid/fraction";
+import { HEIR_SOURCES } from "@/lib/faraid/copy";
+import type { SourceId } from "@/lib/sources";
+import { SourceLinks } from "./SourceLinks";
 import SuccessiveDeath from "./SuccessiveDeath";
 
 const METHOD_LABEL: Record<string, string> = {
   normal: "Standard shares",
   awl: "'Awl (shares reduced)",
   radd: "Radd (remainder returned)",
+};
+
+const METHOD_SOURCES: Record<string, readonly SourceId[]> = {
+  normal: ["quran-4-11", "quran-4-12", "bukhari-6732", "islamqa-225165"],
+  awl: ["islamqa-131556", "islamqa-126233", "quran-4-11"],
+  radd: ["islamqa-160948", "islamqa-225165"],
 };
 
 const METHOD_STYLE: Record<string, string> = {
@@ -89,6 +98,7 @@ export default function Results({
             {METHOD_LABEL[result.method]}
           </span>
         </div>
+        <SourceLinks ids={METHOD_SOURCES[result.method]} />
 
         {moneyInvalid && (
           <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
@@ -140,6 +150,9 @@ export default function Results({
             </table>
           </div>
         )}
+        {enteredMoney && (
+          <SourceLinks ids={["quran-4-11", "islamqa-200127", "islamqa-44039", "bukhari-2742"]} />
+        )}
 
         {estate.net === 0 && enteredMoney && (
           <p className="text-sm text-amber-800">
@@ -169,6 +182,7 @@ export default function Results({
                       )}
                     </span>
                     <span className="block text-xs text-zinc-500">{share.reason}</span>
+                    <SourceLinks ids={HEIR_SOURCES[share.key]} className="mt-1" />
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 font-mono text-zinc-900">
                     {toText(share.share)}
@@ -205,6 +219,7 @@ export default function Results({
                     <span className="block text-xs text-zinc-500">
                       Remainder that this school does not return by radd.
                     </span>
+                    <SourceLinks ids={["islamqa-160948"]} className="mt-1" />
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 font-mono text-zinc-900">
                     {toText(result.treasury)}
@@ -242,11 +257,12 @@ export default function Results({
             <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
               Excluded relatives (hajb)
             </h3>
+            <SourceLinks ids={["islamqa-140167", "islamqa-106599"]} className="mb-2" />
             <ul className="space-y-1 text-sm text-zinc-600">
               {result.blocked.map((blocked) => (
                 <li
                   key={blocked.key}
-                  className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4"
+                  className="flex flex-col gap-1"
                 >
                   <span>
                     {blocked.label}
@@ -255,6 +271,7 @@ export default function Results({
                     )}
                   </span>
                   <span className="text-xs text-zinc-500 sm:text-right">{blocked.reason}</span>
+                  <SourceLinks ids={HEIR_SOURCES[blocked.key]} />
                 </li>
               ))}
             </ul>
@@ -271,10 +288,14 @@ export default function Results({
             ))}
           </ul>
         )}
+        {result.notes.length > 0 && (
+          <SourceLinks ids={["islamqa-140167", "islamqa-160948"]} />
+        )}
 
         {estate.wasiyyahCapped && (
           <p className="text-xs text-zinc-500">
             The will was reduced to one-third of the net estate ({formatMoney(estate.wasiyyahCap)}).
+            <SourceLinks ids={["bukhari-2742", "muslim-1628a", "islamqa-174421"]} className="mt-1" />
           </p>
         )}
 

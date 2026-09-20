@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { applySuccessiveDeath } from "@/lib/faraid/successive";
-import { HEIR_HELP } from "@/lib/faraid/copy";
+import { HEIR_HELP, HEIR_SOURCES } from "@/lib/faraid/copy";
 import { toPercent, toText, isZero } from "@/lib/faraid/fraction";
 import type { SchoolId } from "@/lib/faraid/schools";
 import { EMPTY_INPUT, type CalculationResult, type HeirInput, type HeirKey } from "@/lib/faraid/types";
@@ -48,6 +48,7 @@ export default function SuccessiveDeath({
       <Toggle
         label="An heir later died before the estate was split"
         hint="This applies successive death (munasakha). The deceased heir's share is split among that person's own heirs."
+        sources={["islamqa-127945"]}
         checked={enabled}
         onChange={setEnabled}
       />
@@ -75,6 +76,7 @@ export default function SuccessiveDeath({
             <Stepper
               label="Number of wives"
               hint={HEIR_HELP.wives}
+              sources={HEIR_SOURCES.wives}
               value={heirs.wives}
               min={1}
               max={4}
@@ -85,36 +87,42 @@ export default function SuccessiveDeath({
             <Stepper
               label="Sons"
               hint={HEIR_HELP.sons}
+              sources={HEIR_SOURCES.sons}
               value={heirs.sons}
               onChange={(value) => setHeir("sons", value)}
             />
             <Stepper
               label="Daughters"
               hint={HEIR_HELP.daughters}
+              sources={HEIR_SOURCES.daughters}
               value={heirs.daughters}
               onChange={(value) => setHeir("daughters", value)}
             />
             <Toggle
               label="Father"
               hint={HEIR_HELP.father}
+              sources={HEIR_SOURCES.father}
               checked={heirs.father}
               onChange={(value) => setHeir("father", value)}
             />
             <Toggle
               label="Mother"
               hint={HEIR_HELP.mother}
+              sources={HEIR_SOURCES.mother}
               checked={heirs.mother}
               onChange={(value) => setHeir("mother", value)}
             />
             <Stepper
               label="Full brothers"
               hint={HEIR_HELP.fullBrothers}
+              sources={HEIR_SOURCES.fullBrothers}
               value={heirs.fullBrothers}
               onChange={(value) => setHeir("fullBrothers", value)}
             />
             <Stepper
               label="Full sisters"
               hint={HEIR_HELP.fullSisters}
+              sources={HEIR_SOURCES.fullSisters}
               value={heirs.fullSisters}
               onChange={(value) => setHeir("fullSisters", value)}
             />

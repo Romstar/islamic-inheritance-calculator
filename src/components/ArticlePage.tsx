@@ -58,6 +58,9 @@ export default function ArticlePage({
               {title}
             </h1>
             <p className="mt-2 text-sm text-zinc-600">{lead}</p>
+            <p className="mt-3 text-xs text-zinc-500">
+              Each ruling below links to the Quran, a Hadith, or IslamQA. Links open on those sites.
+            </p>
           </div>
           {children}
           <CalculatorCta />

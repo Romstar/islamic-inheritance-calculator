@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ArticlePage from "@/components/ArticlePage";
 import JsonLd from "@/components/JsonLd";
+import { Cited } from "@/components/SourceLinks";
 import { guidePage } from "@/lib/guides";
 import { pageMetadata } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site";
@@ -50,23 +51,41 @@ export default function HowToUsePage() {
       />
       <section className="space-y-2">
         <h2 className="text-lg font-semibold text-zinc-900">Steps</h2>
-        <ol className="list-decimal space-y-2 pl-5 text-sm text-zinc-600">
-          <li>Open the calculator and choose a school of thought.</li>
-          <li>Say whether a husband or wife survives.</li>
-          <li>Enter sons and daughters. Add grandchildren only in the son&apos;s line.</li>
-          <li>Mark which parents and grandparents are alive.</li>
-          <li>Enter siblings and, if asked, nephews, uncles, or cousins.</li>
-          <li>Optionally enter the estate, debts, funeral costs, and a will.</li>
-          <li>Read the results. Copy the link or print the page if you need a record.</li>
+        <ol className="list-decimal space-y-3 pl-5">
+          <Cited as="li" sources={["islamqa-140167", "islamqa-160948"]}>
+            Open the calculator and choose a school of thought. IslamQA notes that scholars agree
+            on most shares and differ on a few issues.
+          </Cited>
+          <Cited as="li" sources={["quran-4-12", "islamqa-127945"]}>
+            Say whether a husband or wife survives. Count only people who outlive the deceased.
+          </Cited>
+          <Cited as="li" sources={["quran-4-11", "islamqa-131473"]}>
+            Enter sons and daughters. Add grandchildren only in the son&apos;s line.
+          </Cited>
+          <Cited as="li" sources={["quran-4-11", "islamqa-175366"]}>
+            Mark which parents and grandparents are alive.
+          </Cited>
+          <Cited as="li" sources={["quran-4-12", "quran-4-176", "islamqa-135906"]}>
+            Enter siblings and, if asked, nephews, uncles, or cousins.
+          </Cited>
+          <Cited as="li" sources={["quran-4-11", "islamqa-200127", "bukhari-2742"]}>
+            Optionally enter the estate, debts, funeral costs, and a will. Debts and funeral costs
+            come out first. A will is capped at one-third.
+          </Cited>
+          <li className="text-sm text-zinc-600">
+            Read the results. Copy the link or print the page if you need a record.
+          </li>
         </ol>
       </section>
       <section className="space-y-2">
         <h2 className="text-lg font-semibold text-zinc-900">Tips</h2>
-        <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600">
-          <li>Skip money fields if you only need fractions.</li>
-          <li>Use one currency for every amount.</li>
-          <li>The form hides relatives who cannot inherit after your earlier answers.</li>
-          <li>
+        <ul className="list-disc space-y-3 pl-5">
+          <li className="text-sm text-zinc-600">Skip money fields if you only need fractions.</li>
+          <li className="text-sm text-zinc-600">Use one currency for every amount.</li>
+          <Cited as="li" sources={["islamqa-140167", "islamqa-106599"]}>
+            The form hides relatives who cannot inherit after your earlier answers.
+          </Cited>
+          <Cited as="li" sources={["quran-4-13", "islamqa-10447"]}>
             The result is for education.{" "}
             <Link
               href="/scope"
@@ -75,7 +94,7 @@ export default function HowToUsePage() {
               Check the scope
             </Link>{" "}
             before you rely on it.
-          </li>
+          </Cited>
         </ul>
       </section>
     </ArticlePage>

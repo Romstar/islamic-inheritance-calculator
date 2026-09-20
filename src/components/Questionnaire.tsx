@@ -9,7 +9,8 @@ import {
   spouseChoiceFromHeirs,
   type SpouseChoice,
 } from "@/lib/faraid/caseState";
-import { ESTATE_HELP, HEIR_HELP, STEP_COPY } from "@/lib/faraid/copy";
+import { ESTATE_HELP, ESTATE_SOURCES, HEIR_HELP, HEIR_SOURCES, STEP_COPY, STEP_SOURCES } from "@/lib/faraid/copy";
+import { SourceLinks } from "./SourceLinks";
 import { parseMoneyField } from "@/lib/faraid/money";
 import { calculatorTitle, type SchoolId } from "@/lib/faraid/schools";
 import {
@@ -141,6 +142,7 @@ export default function Questionnaire() {
               <Stepper
                 label="Number of wives"
                 hint={HEIR_HELP.wives}
+                sources={HEIR_SOURCES.wives}
                 value={heirs.wives}
                 min={1}
                 max={4}
@@ -155,12 +157,14 @@ export default function Questionnaire() {
             <Stepper
               label="Sons"
               hint={HEIR_HELP.sons}
+              sources={HEIR_SOURCES.sons}
               value={heirs.sons}
               onChange={(value) => setHeir("sons", value)}
             />
             <Stepper
               label="Daughters"
               hint={HEIR_HELP.daughters}
+              sources={HEIR_SOURCES.daughters}
               value={heirs.daughters}
               onChange={(value) => setHeir("daughters", value)}
             />
@@ -173,12 +177,14 @@ export default function Questionnaire() {
               <Stepper
                 label="Grandsons (son's sons)"
                 hint={HEIR_HELP.grandsons}
+                sources={HEIR_SOURCES.grandsons}
                 value={heirs.grandsons}
                 onChange={(value) => setHeir("grandsons", value)}
               />
               <Stepper
                 label="Granddaughters (son's daughters)"
                 hint={HEIR_HELP.granddaughters}
+                sources={HEIR_SOURCES.granddaughters}
                 value={heirs.granddaughters}
                 onChange={(value) => setHeir("granddaughters", value)}
               />
@@ -188,12 +194,14 @@ export default function Questionnaire() {
                 <Stepper
                   label="Great-grandsons (son's son's sons)"
                   hint={HEIR_HELP.greatGrandsons}
+                  sources={HEIR_SOURCES.greatGrandsons}
                   value={heirs.greatGrandsons}
                   onChange={(value) => setHeir("greatGrandsons", value)}
                 />
                 <Stepper
                   label="Great-granddaughters (son's son's daughters)"
                   hint={HEIR_HELP.greatGranddaughters}
+                  sources={HEIR_SOURCES.greatGranddaughters}
                   value={heirs.greatGranddaughters}
                   onChange={(value) => setHeir("greatGranddaughters", value)}
                 />
@@ -207,12 +215,14 @@ export default function Questionnaire() {
             <Toggle
               label="Father"
               hint={HEIR_HELP.father}
+              sources={HEIR_SOURCES.father}
               checked={heirs.father}
               onChange={(value) => setHeir("father", value)}
             />
             <Toggle
               label="Mother"
               hint={HEIR_HELP.mother}
+              sources={HEIR_SOURCES.mother}
               checked={heirs.mother}
               onChange={(value) => setHeir("mother", value)}
             />
@@ -225,6 +235,7 @@ export default function Questionnaire() {
               <Toggle
                 label="Paternal grandfather (father's father)"
                 hint={HEIR_HELP.paternalGrandfather}
+                sources={HEIR_SOURCES.paternalGrandfather}
                 checked={heirs.paternalGrandfather}
                 onChange={(value) => setHeir("paternalGrandfather", value)}
               />
@@ -233,6 +244,7 @@ export default function Questionnaire() {
               <Toggle
                 label="Paternal great-grandfather"
                 hint={HEIR_HELP.paternalGreatGrandfather}
+                sources={HEIR_SOURCES.paternalGreatGrandfather}
                 checked={heirs.paternalGreatGrandfather}
                 onChange={(value) => setHeir("paternalGreatGrandfather", value)}
               />
@@ -241,6 +253,7 @@ export default function Questionnaire() {
               <Toggle
                 label="Paternal grandmother (father's mother)"
                 hint={HEIR_HELP.paternalGrandmother}
+                sources={HEIR_SOURCES.paternalGrandmother}
                 checked={heirs.paternalGrandmother}
                 onChange={(value) => setHeir("paternalGrandmother", value)}
               />
@@ -249,6 +262,7 @@ export default function Questionnaire() {
               <Toggle
                 label="Maternal grandmother (mother's mother)"
                 hint={HEIR_HELP.maternalGrandmother}
+                sources={HEIR_SOURCES.maternalGrandmother}
                 checked={heirs.maternalGrandmother}
                 onChange={(value) => setHeir("maternalGrandmother", value)}
               />
@@ -266,6 +280,10 @@ export default function Questionnaire() {
                 {school === "hanafi" ? " or paternal grandfather" : ""} is alive.
                 Two or more siblings still reduce the mother&apos;s share from one-third to
                 one-sixth.
+                <SourceLinks
+                  className="mt-2"
+                  ids={["quran-4-11", "islamqa-130287", "islamqa-185199", "islamqa-175366"]}
+                />
               </p>
             ) : school &&
               school !== "hanafi" &&
@@ -273,6 +291,7 @@ export default function Questionnaire() {
               <p className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-600">
                 This school shares residue between the grandfather and siblings (Zayd&apos;s
                 method).
+                <SourceLinks className="mt-2" ids={["islamqa-140167", "islamqa-175366"]} />
               </p>
             ) : null}
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -280,6 +299,7 @@ export default function Questionnaire() {
                 <Stepper
                   label="Full brothers"
                   hint={HEIR_HELP.fullBrothers}
+                  sources={HEIR_SOURCES.fullBrothers}
                   value={heirs.fullBrothers}
                   onChange={(value) => setHeir("fullBrothers", value)}
                 />
@@ -288,6 +308,7 @@ export default function Questionnaire() {
                 <Stepper
                   label="Full sisters"
                   hint={HEIR_HELP.fullSisters}
+                  sources={HEIR_SOURCES.fullSisters}
                   value={heirs.fullSisters}
                   onChange={(value) => setHeir("fullSisters", value)}
                 />
@@ -296,6 +317,7 @@ export default function Questionnaire() {
                 <Stepper
                   label="Paternal half-brothers (same father)"
                   hint={HEIR_HELP.paternalBrothers}
+                  sources={HEIR_SOURCES.paternalBrothers}
                   value={heirs.paternalBrothers}
                   onChange={(value) => setHeir("paternalBrothers", value)}
                 />
@@ -304,6 +326,7 @@ export default function Questionnaire() {
                 <Stepper
                   label="Paternal half-sisters (same father)"
                   hint={HEIR_HELP.paternalSisters}
+                  sources={HEIR_SOURCES.paternalSisters}
                   value={heirs.paternalSisters}
                   onChange={(value) => setHeir("paternalSisters", value)}
                 />
@@ -312,6 +335,7 @@ export default function Questionnaire() {
                 <Stepper
                   label="Maternal (uterine) siblings (same mother)"
                   hint={HEIR_HELP.maternalSiblings}
+                  sources={HEIR_SOURCES.maternalSiblings}
                   value={heirs.maternalSiblings}
                   onChange={(value) => setHeir("maternalSiblings", value)}
                 />
@@ -325,36 +349,42 @@ export default function Questionnaire() {
             <Stepper
               label="Full brothers' sons (nephews)"
               hint={HEIR_HELP.fullNephews}
+              sources={HEIR_SOURCES.fullNephews}
               value={heirs.fullNephews}
               onChange={(value) => setHeir("fullNephews", value)}
             />
             <Stepper
               label="Paternal half-brothers' sons"
               hint={HEIR_HELP.paternalNephews}
+              sources={HEIR_SOURCES.paternalNephews}
               value={heirs.paternalNephews}
               onChange={(value) => setHeir("paternalNephews", value)}
             />
             <Stepper
               label="Full paternal uncles"
               hint={HEIR_HELP.fullUncles}
+              sources={HEIR_SOURCES.fullUncles}
               value={heirs.fullUncles}
               onChange={(value) => setHeir("fullUncles", value)}
             />
             <Stepper
               label="Paternal half-uncles"
               hint={HEIR_HELP.paternalUncles}
+              sources={HEIR_SOURCES.paternalUncles}
               value={heirs.paternalUncles}
               onChange={(value) => setHeir("paternalUncles", value)}
             />
             <Stepper
               label="Full paternal uncles' sons (cousins)"
               hint={HEIR_HELP.fullCousins}
+              sources={HEIR_SOURCES.fullCousins}
               value={heirs.fullCousins}
               onChange={(value) => setHeir("fullCousins", value)}
             />
             <Stepper
               label="Paternal half-uncles' sons"
               hint={HEIR_HELP.paternalCousins}
+              sources={HEIR_SOURCES.paternalCousins}
               value={heirs.paternalCousins}
               onChange={(value) => setHeir("paternalCousins", value)}
             />
@@ -366,12 +396,14 @@ export default function Questionnaire() {
             <Stepper
               label="Daughter's sons"
               hint={HEIR_HELP.daughtersSons}
+              sources={HEIR_SOURCES.daughtersSons}
               value={heirs.daughtersSons}
               onChange={(value) => setHeir("daughtersSons", value)}
             />
             <Stepper
               label="Daughter's daughters"
               hint={HEIR_HELP.daughtersDaughters}
+              sources={HEIR_SOURCES.daughtersDaughters}
               value={heirs.daughtersDaughters}
               onChange={(value) => setHeir("daughtersDaughters", value)}
             />
@@ -384,6 +416,7 @@ export default function Questionnaire() {
               id="gross"
               label="Gross estate (optional)"
               hint={ESTATE_HELP.gross}
+              sources={ESTATE_SOURCES.gross}
               value={gross}
               invalid={parseMoneyField(gross).invalid}
               onChange={setGross}
@@ -392,6 +425,7 @@ export default function Questionnaire() {
               id="debts"
               label="Debts"
               hint={ESTATE_HELP.debts}
+              sources={ESTATE_SOURCES.debts}
               value={debts}
               invalid={parseMoneyField(debts).invalid}
               onChange={setDebts}
@@ -400,6 +434,7 @@ export default function Questionnaire() {
               id="funeral"
               label="Funeral costs"
               hint={ESTATE_HELP.funeral}
+              sources={ESTATE_SOURCES.funeral}
               value={funeral}
               invalid={parseMoneyField(funeral).invalid}
               onChange={setFuneral}
@@ -408,6 +443,7 @@ export default function Questionnaire() {
               id="wasiyyah"
               label="Will / bequest"
               hint={ESTATE_HELP.wasiyyah}
+              sources={ESTATE_SOURCES.wasiyyah}
               value={wasiyyah}
               invalid={parseMoneyField(wasiyyah).invalid}
               onChange={setWasiyyah}
@@ -452,7 +488,8 @@ export default function Questionnaire() {
         {!onResults && question ? (
           <>
             <h2 className="text-lg font-semibold text-zinc-900">{question.title}</h2>
-            <p className="mt-1 mb-5 text-sm text-zinc-500">{question.subtitle}</p>
+            <p className="mt-1 mb-2 text-sm text-zinc-500">{question.subtitle}</p>
+            {questionId && <SourceLinks className="mb-5" ids={STEP_SOURCES[questionId]} />}
             {questionId && renderStep(questionId)}
 
             <div className="mt-6 flex items-center justify-between">

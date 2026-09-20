@@ -1,13 +1,23 @@
 "use client";
 
+import { SourceLinks } from "@/components/SourceLinks";
+import type { SourceId } from "@/lib/sources";
+
+function FieldSources({ ids }: { ids?: readonly SourceId[] }) {
+  if (!ids || ids.length === 0) return null;
+  return <SourceLinks ids={ids} className="mt-1" />;
+}
+
 export function Toggle({
   label,
   hint,
+  sources,
   checked,
   onChange,
 }: {
   label: string;
   hint?: string;
+  sources?: readonly SourceId[];
   checked: boolean;
   onChange: (value: boolean) => void;
 }) {
@@ -26,6 +36,7 @@ export function Toggle({
       <span className="min-w-0">
         <span className="block text-sm font-medium text-zinc-900">{label}</span>
         {hint && <span className="block text-xs text-zinc-500">{hint}</span>}
+        <FieldSources ids={sources} />
       </span>
       <span
         className={`relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors ${
@@ -46,6 +57,7 @@ export function MoneyField({
   id,
   label,
   hint,
+  sources,
   value,
   invalid,
   onChange,
@@ -53,6 +65,7 @@ export function MoneyField({
   id: string;
   label: string;
   hint?: string;
+  sources?: readonly SourceId[];
   value: string;
   invalid?: boolean;
   onChange: (value: string) => void;
@@ -63,6 +76,7 @@ export function MoneyField({
         {label}
       </label>
       {hint && <p className="text-xs text-zinc-500">{hint}</p>}
+      <FieldSources ids={sources} />
       <div
         className={`flex items-center gap-2 rounded-lg border bg-white px-4 py-3 ${
           invalid ? "border-amber-400" : "border-zinc-200"
@@ -89,6 +103,7 @@ export function MoneyField({
 export function Stepper({
   label,
   hint,
+  sources,
   value,
   min = 0,
   max = 20,
@@ -96,6 +111,7 @@ export function Stepper({
 }: {
   label: string;
   hint?: string;
+  sources?: readonly SourceId[];
   value: number;
   min?: number;
   max?: number;
@@ -111,6 +127,7 @@ export function Stepper({
       <span className="min-w-0">
         <span className="block text-sm font-medium text-zinc-900">{label}</span>
         {hint && <span className="block text-xs text-zinc-500">{hint}</span>}
+        <FieldSources ids={sources} />
       </span>
       <span className="flex shrink-0 items-center gap-2">
         <button
