@@ -18,7 +18,7 @@ export default function SchoolPicker({
             type="button"
             aria-pressed={selected}
             onClick={() => onChange(school.id)}
-            className={`rounded-xl border px-4 py-4 text-left transition-colors ${
+            className={`cursor-pointer rounded-xl border px-4 py-4 text-left transition-colors ${
               selected
                 ? "border-emerald-500 bg-emerald-50"
                 : "border-zinc-200 bg-white hover:border-zinc-300"
