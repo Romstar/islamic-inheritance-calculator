@@ -64,6 +64,12 @@ describe("case URL encoding", () => {
     expect(wivesOnly.heirs.wives).toBe(4);
   });
 
+  it("keeps a Maliki paternal grandmother with the father", () => {
+    const decoded = decodeCase("md=maliki&f=1&pgm=1");
+    expect(decoded.heirs.father).toBe(true);
+    expect(decoded.heirs.paternalGrandmother).toBe(true);
+  });
+
   it("prunes heirs that skip logic would hide", () => {
     const decoded = decodeCase("s=1&gs=3&fu=2");
     expect(decoded.heirs.sons).toBe(1);

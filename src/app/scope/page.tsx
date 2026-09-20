@@ -31,7 +31,10 @@ export default function ScopePage() {
               <li>Residue for agnates (asaba), including 2:1 male-to-female splits</li>
               <li>Blocking of farther relatives (hajb)</li>
               <li>&apos;Awl, when fixed shares exceed the estate</li>
-              <li>Radd, when remainder returns to fixed-share heirs</li>
+              <li>Radd, or remainder to the public treasury, by school</li>
+              <li>Grandfather with siblings (Hanafi hajb, or Zayd&apos;s method)</li>
+              <li>Mushtaraka for Maliki and Shafi&apos;i</li>
+              <li>Successive death (munasakha) after the first result</li>
               <li>Debts and funeral costs before heirs</li>
               <li>An optional will, capped at one-third of the net estate</li>
             </ul>
@@ -41,8 +44,9 @@ export default function ScopePage() {
             <h2 className="text-lg font-semibold text-zinc-900">Heirs in this version</h2>
             <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600">
               <li>Husband, or up to four wives</li>
-              <li>Father, mother, paternal grandfather, paternal grandmother, maternal grandmother</li>
-              <li>Sons, daughters, and grandchildren in the son&apos;s line (one generation)</li>
+              <li>Father, mother, paternal grandfather, great-grandfather, and both grandmothers</li>
+              <li>Sons, daughters, grandchildren and great-grandchildren in the son&apos;s line</li>
+              <li>Daughter&apos;s children as distant kindred (except Maliki)</li>
               <li>Full, paternal half, and maternal siblings</li>
               <li>Brothers&apos; sons, paternal uncles, and their sons</li>
             </ul>
@@ -55,18 +59,18 @@ export default function ScopePage() {
               Shafi&apos;i, or Hanbali. Each choice opens that school&apos;s calculator.
             </p>
             <p className="text-sm text-zinc-600">
-              Share numbers in this version still follow one engine. The paternal
-              grandfather blocks all siblings, as in the Hanafi position. School-specific
-              rules for the other three schools will come in a later version.
+              Share numbers follow the school you pick. The Hanafi calculator treats the
+              grandfather like the father. Maliki, Shafi&apos;i, and Hanbali share the
+              grandfather with siblings by Zayd&apos;s method. Maliki sends leftover
+              shares to the public treasury. The other schools apply radd, with a
+              Hanbali exception for a lone spouse.
             </p>
+
           </section>
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-zinc-900">What it does not cover</h2>
             <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600">
-              <li>Children of daughters and other distant kindred</li>
-              <li>Great-grandparents and great-grandchildren</li>
-              <li>An heir who dies before the estate is split</li>
               <li>Unborn child, missing person, killer of the deceased</li>
               <li>Difference of religion, apostasy, or disputed parentage</li>
               <li>Adoption, foster relations, or intersex cases</li>

@@ -5,9 +5,9 @@ import type { Fraction } from "./fraction";
  * Grandchildren cover the son's line (agnatic). Extended agnates cover
  * brothers' sons, paternal uncles, and their sons.
  *
- * Notes on the disputed grandfather + siblings case: this engine follows the
- * Hanafi position. The paternal grandfather blocks all siblings, exactly as
- * the father does.
+ * Notes on the disputed grandfather + siblings case: Hanafi treats the
+ * grandfather like the father. Maliki, Shafi'i, and Hanbali share by
+ * Zayd's method (muqasamah).
  */
 export interface HeirInput {
   // Spouse
@@ -18,6 +18,7 @@ export interface HeirInput {
   father: boolean;
   mother: boolean;
   paternalGrandfather: boolean; // father's father
+  paternalGreatGrandfather: boolean; // father's father's father
   paternalGrandmother: boolean; // father's mother
   maternalGrandmother: boolean; // mother's mother
 
@@ -26,6 +27,10 @@ export interface HeirInput {
   daughters: number;
   grandsons: number; // son's sons
   granddaughters: number; // son's daughters
+  greatGrandsons: number; // son's son's sons
+  greatGranddaughters: number; // son's son's daughters
+  daughtersSons: number; // daughter's sons (distant kindred)
+  daughtersDaughters: number; // daughter's daughters (distant kindred)
 
   // Siblings
   fullBrothers: number;
@@ -49,7 +54,8 @@ export type ShareType =
   | "fixed" // ashab al-furud
   | "residuary" // asaba bi nafsihi / bil-ghayr / ma'a al-ghayr
   | "fixed+residuary" // father or grandfather: 1/6 plus residue
-  | "radd"; // fixed share increased by radd
+  | "radd" // fixed share increased by radd
+  | "kindred"; // distant kindred (dhawi al-arham)
 
 export interface HeirShare {
   key: HeirKey;
@@ -81,6 +87,8 @@ export interface CalculationResult {
   fixedTotalBefore: Fraction;
   notes: string[];
   errors: string[];
+  /** Remainder sent to the public treasury when this school does not apply radd. */
+  treasury: Fraction;
 }
 
 export const EMPTY_INPUT: HeirInput = {
@@ -89,12 +97,17 @@ export const EMPTY_INPUT: HeirInput = {
   father: false,
   mother: false,
   paternalGrandfather: false,
+  paternalGreatGrandfather: false,
   paternalGrandmother: false,
   maternalGrandmother: false,
   sons: 0,
   daughters: 0,
   grandsons: 0,
   granddaughters: 0,
+  greatGrandsons: 0,
+  greatGranddaughters: 0,
+  daughtersSons: 0,
+  daughtersDaughters: 0,
   fullBrothers: 0,
   fullSisters: 0,
   paternalBrothers: 0,
@@ -118,6 +131,10 @@ export const HEIR_LABELS: Record<HeirKey, { singular: string; plural: string }> 
       singular: "Paternal grandfather",
       plural: "Paternal grandfather",
     },
+    paternalGreatGrandfather: {
+      singular: "Paternal great-grandfather",
+      plural: "Paternal great-grandfather",
+    },
     paternalGrandmother: {
       singular: "Paternal grandmother",
       plural: "Paternal grandmother",
@@ -132,6 +149,22 @@ export const HEIR_LABELS: Record<HeirKey, { singular: string; plural: string }> 
     granddaughters: {
       singular: "Granddaughter (son's daughter)",
       plural: "Granddaughters (son's daughters)",
+    },
+    greatGrandsons: {
+      singular: "Great-grandson (son's son's son)",
+      plural: "Great-grandsons (son's son's sons)",
+    },
+    greatGranddaughters: {
+      singular: "Great-granddaughter (son's son's daughter)",
+      plural: "Great-granddaughters (son's son's daughters)",
+    },
+    daughtersSons: {
+      singular: "Daughter's son",
+      plural: "Daughter's sons",
+    },
+    daughtersDaughters: {
+      singular: "Daughter's daughter",
+      plural: "Daughter's daughters",
     },
     fullBrothers: { singular: "Full brother", plural: "Full brothers" },
     fullSisters: { singular: "Full sister", plural: "Full sisters" },

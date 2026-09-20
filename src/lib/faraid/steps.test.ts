@@ -38,11 +38,13 @@ describe("visible steps", () => {
     expect(isStepVisible("grandparents", heirs({ father: true, mother: true }))).toBe(false);
     expect(visibleGrandparentFields(heirs({ father: true }))).toEqual({
       paternalGrandfather: false,
+      paternalGreatGrandfather: false,
       paternalGrandmother: false,
       maternalGrandmother: true,
     });
     expect(visibleGrandparentFields(heirs({ mother: true }))).toEqual({
       paternalGrandfather: true,
+      paternalGreatGrandfather: true,
       paternalGrandmother: false,
       maternalGrandmother: false,
     });
@@ -58,6 +60,26 @@ describe("visible steps", () => {
 
   it("hides siblings when the father is alive and the mother is not", () => {
     expect(isStepVisible("siblings", heirs({ father: true }))).toBe(false);
+  });
+
+  it("keeps siblings with a grandfather in Maliki, Shafi'i, and Hanbali", () => {
+    expect(isStepVisible("siblings", heirs({ paternalGrandfather: true }), "maliki")).toBe(true);
+    expect(isStepVisible("siblings", heirs({ paternalGrandfather: true }), "hanafi")).toBe(false);
+  });
+
+  it("shows paternal grandmother with the father outside Hanafi", () => {
+    expect(visibleGrandparentFields(heirs({ father: true }), "maliki").paternalGrandmother).toBe(
+      true,
+    );
+    expect(visibleGrandparentFields(heirs({ father: true }), "hanafi").paternalGrandmother).toBe(
+      false,
+    );
+  });
+
+  it("hides daughter's children in Maliki and when a son is present", () => {
+    expect(isStepVisible("kindred", EMPTY_INPUT, "maliki")).toBe(false);
+    expect(isStepVisible("kindred", EMPTY_INPUT, "hanafi")).toBe(true);
+    expect(isStepVisible("kindred", heirs({ sons: 1 }), "hanafi")).toBe(false);
   });
 
   it("hides maternal siblings when a daughter is present", () => {

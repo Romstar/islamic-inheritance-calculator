@@ -57,3 +57,31 @@ export function schoolLabel(school: SchoolId | null): string {
 export function calculatorTitle(school: SchoolId): string {
   return `${SCHOOLS[school].label} calculator`;
 }
+
+export function grandfatherBlocksSiblings(school: SchoolId): boolean {
+  return school === "hanafi";
+}
+
+export function fatherBlocksPaternalGrandmother(school: SchoolId): boolean {
+  return school === "hanafi";
+}
+
+export function usesMushtaraka(school: SchoolId): boolean {
+  return school === "maliki" || school === "shafii";
+}
+
+export function usesRadd(school: SchoolId): boolean {
+  return school === "hanafi" || school === "hanbali" || school === "shafii";
+}
+
+export function raddToLoneSpouse(school: SchoolId): boolean {
+  return school === "hanafi";
+}
+
+export function umariyyaWithGrandfather(school: SchoolId): boolean {
+  return school === "hanafi";
+}
+
+export function distantKindredInherit(school: SchoolId): boolean {
+  return school === "hanafi" || school === "hanbali" || school === "shafii";
+}

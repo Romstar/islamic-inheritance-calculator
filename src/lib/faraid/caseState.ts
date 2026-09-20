@@ -34,6 +34,7 @@ const BOOL_KEYS = [
   "father",
   "mother",
   "paternalGrandfather",
+  "paternalGreatGrandfather",
   "paternalGrandmother",
   "maternalGrandmother",
 ] as const satisfies readonly HeirKey[];
@@ -44,6 +45,10 @@ const COUNT_KEYS = [
   "daughters",
   "grandsons",
   "granddaughters",
+  "greatGrandsons",
+  "greatGranddaughters",
+  "daughtersSons",
+  "daughtersDaughters",
   "fullBrothers",
   "fullSisters",
   "paternalBrothers",
@@ -63,12 +68,17 @@ const PARAM: Record<string, string> = {
   father: "f",
   mother: "m",
   paternalGrandfather: "pgf",
+  paternalGreatGrandfather: "pggf",
   paternalGrandmother: "pgm",
   maternalGrandmother: "mgm",
   sons: "s",
   daughters: "d",
   grandsons: "gs",
   granddaughters: "gd",
+  greatGrandsons: "ggs",
+  greatGranddaughters: "ggd",
+  daughtersSons: "ds",
+  daughtersDaughters: "dd",
   fullBrothers: "fb",
   fullSisters: "fs",
   paternalBrothers: "pb",
@@ -116,7 +126,7 @@ export function applySpouseChoice(heirs: HeirInput, choice: SpouseChoice): HeirI
 
 export function encodeCase(snapshot: CaseSnapshot): string {
   const params = new URLSearchParams();
-  const heirs = pruneHiddenHeirs(snapshot.heirs);
+  const heirs = pruneHiddenHeirs(snapshot.heirs, snapshot.school);
   const school = snapshot.school;
 
   if (school) params.set(PARAM.school, school);
@@ -157,7 +167,7 @@ export function decodeCase(search: string): CaseSnapshot {
   }
 
   if (heirs.husband) heirs.wives = 0;
-  const pruned = pruneHiddenHeirs(heirs);
+  const pruned = pruneHiddenHeirs(heirs, school);
 
   let step: CaseStep = "school";
   if (params.get(PARAM.showResults) === "1") step = "results";

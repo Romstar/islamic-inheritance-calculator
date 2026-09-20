@@ -16,7 +16,7 @@ const FAQS = [
   {
     question: "Which school of thought does it follow?",
     answer:
-      "You choose Hanafi, Maliki, Shafi'i, or Hanbali first. Version 1.0 still uses one share engine. The paternal grandfather blocks siblings, as in the Hanafi position.",
+      "You choose Hanafi, Maliki, Shafi'i, or Hanbali first. Each school uses its own rules for the grandfather with siblings, mushtaraka, radd, and distant kindred.",
   },
   {
     question: "Do I need to enter money amounts?",
@@ -46,7 +46,7 @@ const FAQS = [
   {
     question: "Which relatives are missing?",
     answer:
-      "This version does not cover children of daughters, great-grandparents, great-grandchildren, distant kindred, unborn children, missing persons, or a difference of religion.",
+      "This version does not cover every distant kindred class, unborn children, missing persons, or a difference of religion. It does cover daughter's children, great-grandchildren in the son's line, and one successive death.",
   },
 ];
 
