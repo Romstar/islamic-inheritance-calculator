@@ -10,6 +10,13 @@ export default function NotFound() {
           <Link href="/" className="font-medium text-emerald-800 underline-offset-2 hover:underline">
             Go to the calculator
           </Link>
+          {" · "}
+          <Link
+            href="/guides"
+            className="font-medium text-emerald-800 underline-offset-2 hover:underline"
+          >
+            Browse guides
+          </Link>
         </p>
       </main>
     </div>

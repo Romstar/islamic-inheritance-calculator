@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { SCOPE_PAGE } from "@/lib/guides";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Scope",
-  description:
-    "What version 1.0 of the Islamic Inheritance Calculator covers, and what it does not cover.",
-};
+  description: SCOPE_PAGE.description,
+  path: SCOPE_PAGE.href,
+  keywords: SCOPE_PAGE.keywords,
+});
 
 export default function ScopePage() {
   return (
@@ -74,6 +76,13 @@ export default function ScopePage() {
           <p className="text-sm text-zinc-600">
             <Link href="/" className="font-medium text-emerald-800 underline-offset-2 hover:underline">
               Return to the calculator
+            </Link>
+            {" · "}
+            <Link
+              href="/guides"
+              className="font-medium text-emerald-800 underline-offset-2 hover:underline"
+            >
+              Read the inheritance guides
             </Link>
           </p>
         </div>
