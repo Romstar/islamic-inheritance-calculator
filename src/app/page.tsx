@@ -3,7 +3,7 @@ import Link from "next/link";
 import CalculatorApp from "@/components/CalculatorApp";
 import JsonLd from "@/components/JsonLd";
 import { GUIDE_PAGES, HOME_PAGE } from "@/lib/guides";
-import { getSiteUrl, SITE_NAME } from "@/lib/site";
+import { getSiteUrl, LOGO_PATH, OG_IMAGE_PATH, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: { absolute: HOME_PAGE.title },
@@ -22,6 +22,20 @@ export const metadata: Metadata = {
     url: getSiteUrl(),
     siteName: SITE_NAME,
     type: "website",
+    images: [
+      {
+        url: OG_IMAGE_PATH,
+        width: 1200,
+        height: 630,
+        alt: SITE_NAME,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: HOME_PAGE.title,
+    description: HOME_PAGE.description,
+    images: [OG_IMAGE_PATH],
   },
 };
 
@@ -38,6 +52,9 @@ export default function Home() {
           applicationCategory: "FinanceApplication",
           operatingSystem: "Any",
           description: HOME_PAGE.description,
+          image: `${origin}${LOGO_PATH}`,
+          logo: `${origin}${LOGO_PATH}`,
+          publisher: { "@id": `${origin}/#organization` },
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         }}
       />

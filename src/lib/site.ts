@@ -8,3 +8,10 @@ export function getSiteUrl(): string {
 }
 
 export const SITE_NAME = "Islamic Inheritance Calculator";
+
+/** Stable public logo used in Google Search Console / JSON-LD. */
+export const LOGO_PATH = "/logo.png";
+export const LOGO_SVG_PATH = "/logo.svg";
+export const LOGO_WIDTH = 512;
+export const LOGO_HEIGHT = 512;
+export const OG_IMAGE_PATH = "/og-image.png";

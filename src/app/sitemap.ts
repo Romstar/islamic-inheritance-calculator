@@ -14,5 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified,
     changeFrequency: page.href === "/" ? "weekly" : "monthly",
     priority: page.href === "/" ? 1 : page.href === "/guides" ? 0.8 : 0.7,
+    images: page.href === "/" ? [`${origin}/logo.png`, `${origin}/og-image.png`] : undefined,
   }));
 }
