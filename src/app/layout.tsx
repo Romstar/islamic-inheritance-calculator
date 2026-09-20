@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
+import { HOME_PAGE } from "@/lib/guides";
+import { getSiteUrl, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,25 +17,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Islamic Inheritance Calculator",
-    template: "%s · Islamic Inheritance Calculator",
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
   },
-  description:
-    "Calculate Islamic inheritance shares for surviving relatives. Covers fixed shares, residue, blocking, 'awl, and radd. For education only.",
-  applicationName: "Islamic Inheritance Calculator",
+  description: HOME_PAGE.description,
+  applicationName: SITE_NAME,
   keywords: [
     "Islamic inheritance",
     "Faraid",
     "inheritance calculator",
     "heir shares",
+    "mirath",
+    "wasiyyah",
   ],
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Islamic Inheritance Calculator",
+    title: SITE_NAME,
     description:
       "A step-by-step calculator for Islamic inheritance shares. For education only.",
     type: "website",
+    siteName: SITE_NAME,
+    url: "/",
   },
 };
 

@@ -28,6 +28,7 @@ The app is fully client-side. `next build` writes static HTML, CSS, and JS to
 - Answer summary, copy-link, and print on the results page
 - Bookmarkable URLs for a saved case
 - Scope page that states what the tool covers
+- Guide pages for Faraid, heirs, Quranic shares, blocking, 'awl, radd, the will, schools, and FAQ
 
 ## Supported heirs
 

@@ -2,6 +2,8 @@ import Link from "next/link";
 
 const links = [
   { href: "/", label: "Calculator" },
+  { href: "/guides", label: "Guides" },
+  { href: "/faq", label: "FAQ" },
   { href: "/scope", label: "Scope" },
 ];
 
@@ -15,7 +17,7 @@ export default function SiteHeader() {
             Inheritance Calculator
           </Link>
         </div>
-        <nav aria-label="Main" className="flex gap-2">
+        <nav aria-label="Main" className="flex flex-wrap gap-2">
           {links.map((link) => (
             <Link
               key={link.href}
