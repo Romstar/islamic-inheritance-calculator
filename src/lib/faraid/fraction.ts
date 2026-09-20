@@ -54,6 +54,10 @@ export function compare(a: Fraction, b: Fraction): number {
   return a.n * b.d - b.n * a.d;
 }
 
+export function maxFraction(...items: Fraction[]): Fraction {
+  return items.reduce((best, item) => (compare(item, best) > 0 ? item : best));
+}
+
 export function sum(items: Fraction[]): Fraction {
   return items.reduce((acc, x) => add(acc, x), ZERO);
 }

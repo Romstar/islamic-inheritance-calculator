@@ -47,12 +47,14 @@ export default function SchoolsPage() {
       <section className="space-y-2">
         <h2 className="text-lg font-semibold text-zinc-900">What this version does</h2>
         <p className="text-sm text-zinc-600">
-          The first question opens a Hanafi, Maliki, Shafi&apos;i, or Hanbali calculator. Share
-          numbers in version 1.0 still follow one engine. The paternal grandfather blocks all
-          siblings, as in the Hanafi position.
+          The first question opens a Hanafi, Maliki, Shafi&apos;i, or Hanbali calculator. Each
+          school uses its own share rules for the grandfather with siblings, mushtaraka, radd,
+          the public treasury, and distant kindred.
         </p>
         <p className="text-sm text-zinc-600">
-          School-specific rules for the other three schools will come in a later version.{" "}
+          Hanafi treats the grandfather like the father. Maliki, Shafi&apos;i, and Hanbali share
+          with siblings by Zayd&apos;s method, including Akdariyyah. Maliki and Shafi&apos;i apply
+          mushtaraka. Maliki does not apply radd.{" "}
           <Link
             href="/scope"
             className="font-medium text-emerald-800 underline-offset-2 hover:underline"

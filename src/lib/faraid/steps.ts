@@ -1,4 +1,9 @@
-import type { SchoolId } from "./schools";
+import {
+  distantKindredInherit,
+  fatherBlocksPaternalGrandmother,
+  grandfatherBlocksSiblings,
+  type SchoolId,
+} from "./schools";
 import { EMPTY_INPUT, type HeirInput, type HeirKey } from "./types";
 
 export const QUESTION_STEP_IDS = [
@@ -10,6 +15,7 @@ export const QUESTION_STEP_IDS = [
   "grandparents",
   "siblings",
   "extended",
+  "kindred",
   "estate",
 ] as const;
 
@@ -17,6 +23,7 @@ export type QuestionStepId = (typeof QUESTION_STEP_IDS)[number];
 
 export type VisibleGrandparentFields = {
   paternalGrandfather: boolean;
+  paternalGreatGrandfather: boolean;
   paternalGrandmother: boolean;
   maternalGrandmother: boolean;
 };
@@ -30,7 +37,7 @@ export type VisibleSiblingFields = {
 };
 
 function hasMaleDescendant(heirs: HeirInput): boolean {
-  return heirs.sons > 0 || heirs.grandsons > 0;
+  return heirs.sons > 0 || heirs.grandsons > 0 || heirs.greatGrandsons > 0;
 }
 
 function hasAnyDescendant(heirs: HeirInput): boolean {
@@ -38,39 +45,52 @@ function hasAnyDescendant(heirs: HeirInput): boolean {
     heirs.sons > 0 ||
     heirs.daughters > 0 ||
     heirs.grandsons > 0 ||
-    heirs.granddaughters > 0
+    heirs.granddaughters > 0 ||
+    heirs.greatGrandsons > 0 ||
+    heirs.greatGranddaughters > 0
   );
 }
 
 function hasFemaleDescendant(heirs: HeirInput): boolean {
-  return heirs.daughters > 0 || heirs.granddaughters > 0;
+  return heirs.daughters > 0 || heirs.granddaughters > 0 || heirs.greatGranddaughters > 0;
 }
 
-/** Father and paternal grandfather block siblings and more distant agnates. */
-function hasAscendantBlocker(heirs: HeirInput): boolean {
-  return heirs.father || heirs.paternalGrandfather;
+function livingGrandfather(heirs: HeirInput): boolean {
+  return heirs.paternalGrandfather || heirs.paternalGreatGrandfather;
 }
 
-export function visibleGrandparentFields(heirs: HeirInput): VisibleGrandparentFields {
+/** Father always blocks siblings. The grandfather does so only in Hanafi. */
+function hasAscendantBlocker(heirs: HeirInput, school: SchoolId): boolean {
+  if (heirs.father) return true;
+  return grandfatherBlocksSiblings(school) && livingGrandfather(heirs);
+}
+
+export function visibleGrandparentFields(
+  heirs: HeirInput,
+  school: SchoolId = "hanafi",
+): VisibleGrandparentFields {
   return {
     paternalGrandfather: !heirs.father,
-    paternalGrandmother: !heirs.father && !heirs.mother,
+    paternalGreatGrandfather: !heirs.father && !heirs.paternalGrandfather,
+    paternalGrandmother: !heirs.mother && !(fatherBlocksPaternalGrandmother(school) && heirs.father),
     maternalGrandmother: !heirs.mother,
   };
 }
 
-export function visibleSiblingFields(heirs: HeirInput): VisibleSiblingFields {
-  const blockedFromInheritance = hasAscendantBlocker(heirs) || hasMaleDescendant(heirs);
-  const uterineBlocked = hasAscendantBlocker(heirs) || hasAnyDescendant(heirs);
+export function visibleSiblingFields(
+  heirs: HeirInput,
+  school: SchoolId = "hanafi",
+): VisibleSiblingFields {
+  const blockedFromInheritance = hasAscendantBlocker(heirs, school) || hasMaleDescendant(heirs);
+  const uterineBlocked = hasAscendantBlocker(heirs, school) || hasAnyDescendant(heirs) || livingGrandfather(heirs);
   if (blockedFromInheritance) {
-    // Keep the counters when they still affect the mother's share.
     const neededForMother = heirs.mother && !hasAnyDescendant(heirs);
     return {
       fullBrothers: neededForMother,
       fullSisters: neededForMother,
       paternalBrothers: neededForMother,
       paternalSisters: neededForMother,
-      maternalSiblings: neededForMother,
+      maternalSiblings: neededForMother && !uterineBlocked ? neededForMother : neededForMother,
     };
   }
   return {
@@ -82,8 +102,10 @@ export function visibleSiblingFields(heirs: HeirInput): VisibleSiblingFields {
   };
 }
 
-function closerResiduaryThanExtended(heirs: HeirInput): boolean {
-  if (hasMaleDescendant(heirs) || hasAscendantBlocker(heirs)) return true;
+function closerResiduaryThanExtended(heirs: HeirInput, school: SchoolId): boolean {
+  if (hasMaleDescendant(heirs) || heirs.father) return true;
+  if (livingGrandfather(heirs) && grandfatherBlocksSiblings(school)) return true;
+  if (livingGrandfather(heirs)) return true;
   if (heirs.fullBrothers > 0) return true;
   if (heirs.fullSisters > 0 && hasFemaleDescendant(heirs)) return true;
   if (heirs.paternalBrothers > 0) return true;
@@ -91,7 +113,12 @@ function closerResiduaryThanExtended(heirs: HeirInput): boolean {
   return false;
 }
 
-export function isStepVisible(id: QuestionStepId, heirs: HeirInput): boolean {
+export function isStepVisible(
+  id: QuestionStepId,
+  heirs: HeirInput,
+  school: SchoolId | null = "hanafi",
+): boolean {
+  const activeSchool = school ?? "hanafi";
   switch (id) {
     case "school":
     case "spouse":
@@ -102,18 +129,30 @@ export function isStepVisible(id: QuestionStepId, heirs: HeirInput): boolean {
     case "grandchildren":
       return heirs.sons === 0;
     case "grandparents": {
-      const fields = visibleGrandparentFields(heirs);
-      return fields.paternalGrandfather || fields.paternalGrandmother || fields.maternalGrandmother;
+      const fields = visibleGrandparentFields(heirs, activeSchool);
+      return (
+        fields.paternalGrandfather ||
+        fields.paternalGreatGrandfather ||
+        fields.paternalGrandmother ||
+        fields.maternalGrandmother
+      );
     }
     case "siblings": {
       if (hasMaleDescendant(heirs)) return false;
-      if (hasAscendantBlocker(heirs)) {
+      if (hasAscendantBlocker(heirs, activeSchool)) {
         return heirs.mother && !hasAnyDescendant(heirs);
       }
       return true;
     }
     case "extended":
-      return !closerResiduaryThanExtended(heirs);
+      return !closerResiduaryThanExtended(heirs, activeSchool);
+    case "kindred":
+      return (
+        distantKindredInherit(activeSchool) &&
+        !hasMaleDescendant(heirs) &&
+        !heirs.father &&
+        !livingGrandfather(heirs)
+      );
   }
 }
 
@@ -122,7 +161,7 @@ export function visibleStepIds(
   school: SchoolId | null,
 ): QuestionStepId[] {
   if (!school) return ["school"];
-  return QUESTION_STEP_IDS.filter((id) => isStepVisible(id, heirs));
+  return QUESTION_STEP_IDS.filter((id) => isStepVisible(id, heirs, school));
 }
 
 export type CaseStep = QuestionStepId | "results";
@@ -169,28 +208,40 @@ function clearKey(heirs: HeirInput, key: HeirKey): void {
  * Zero heirs that the current answers would hide.
  * This keeps skipped counts from changing the result.
  */
-export function pruneHiddenHeirs(heirs: HeirInput): HeirInput {
+export function pruneHiddenHeirs(heirs: HeirInput, school: SchoolId | null = "hanafi"): HeirInput {
+  const activeSchool = school ?? "hanafi";
   const next: HeirInput = { ...heirs };
 
-  if (!isStepVisible("grandchildren", next)) {
+  if (!isStepVisible("grandchildren", next, activeSchool)) {
     next.grandsons = 0;
     next.granddaughters = 0;
+    next.greatGrandsons = 0;
+    next.greatGranddaughters = 0;
+  } else if (next.grandsons > 0) {
+    next.greatGrandsons = 0;
+    next.greatGranddaughters = 0;
   }
 
-  const grandparents = visibleGrandparentFields(next);
+  const grandparents = visibleGrandparentFields(next, activeSchool);
   if (!grandparents.paternalGrandfather) next.paternalGrandfather = false;
+  if (!grandparents.paternalGreatGrandfather) next.paternalGreatGrandfather = false;
   if (!grandparents.paternalGrandmother) next.paternalGrandmother = false;
   if (!grandparents.maternalGrandmother) next.maternalGrandmother = false;
 
-  const siblings = visibleSiblingFields(next);
+  const siblings = visibleSiblingFields(next, activeSchool);
   if (!siblings.fullBrothers) next.fullBrothers = 0;
   if (!siblings.fullSisters) next.fullSisters = 0;
   if (!siblings.paternalBrothers) next.paternalBrothers = 0;
   if (!siblings.paternalSisters) next.paternalSisters = 0;
   if (!siblings.maternalSiblings) next.maternalSiblings = 0;
 
-  if (!isStepVisible("extended", next)) {
+  if (!isStepVisible("extended", next, activeSchool)) {
     for (const key of EXTENDED_KEYS) clearKey(next, key);
+  }
+
+  if (!isStepVisible("kindred", next, activeSchool)) {
+    next.daughtersSons = 0;
+    next.daughtersDaughters = 0;
   }
 
   return next;

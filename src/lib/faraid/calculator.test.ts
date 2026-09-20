@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { calculate } from "./calculator";
 import { EMPTY_INPUT, type HeirInput, type HeirKey } from "./types";
-import { compare, ONE, sum, toText, type Fraction } from "./fraction";
+import { add, compare, ONE, sum, toText, type Fraction } from "./fraction";
 
 function input(overrides: Partial<HeirInput>): HeirInput {
   return { ...EMPTY_INPUT, ...overrides };
@@ -19,7 +19,7 @@ function isBlocked(key: HeirKey, result: Result): boolean {
 }
 
 function total(result: Result): Fraction {
-  return sum(result.shares.map((s) => s.share));
+  return add(sum(result.shares.map((s) => s.share)), result.treasury);
 }
 
 function expectSumsToOne(result: Result) {
@@ -409,3 +409,158 @@ describe("invariant: shares always sum to one", () => {
     expectSumsToOne(calculate(input(scenario)));
   });
 });
+
+describe("Hanafi Umariyyah with grandfather", () => {
+  it("treats the grandfather like the father", () => {
+    const r = calculate(input({ husband: true, mother: true, paternalGrandfather: true }), "hanafi");
+    expect(shareOf("husband", r)).toBe("1/2");
+    expect(shareOf("mother", r)).toBe("1/6");
+    expect(shareOf("paternalGrandfather", r)).toBe("1/3");
+    expectSumsToOne(r);
+  });
+});
+
+describe("school differences", () => {
+  it("Maliki/Shafi'i/Hanbali: mother keeps 1/3 with grandfather and husband", () => {
+    for (const school of ["maliki", "shafii", "hanbali"] as const) {
+      const r = calculate(input({ husband: true, mother: true, paternalGrandfather: true }), school);
+      expect(shareOf("husband", r)).toBe("1/2");
+      expect(shareOf("mother", r)).toBe("1/3");
+      expect(shareOf("paternalGrandfather", r)).toBe("1/6");
+      expectSumsToOne(r);
+    }
+  });
+
+  it("Hanafi father blocks paternal grandmother; other schools do not", () => {
+    const hanafi = calculate(input({ father: true, paternalGrandmother: true, sons: 1 }), "hanafi");
+    expect(isBlocked("paternalGrandmother", hanafi)).toBe(true);
+    const maliki = calculate(input({ father: true, paternalGrandmother: true, sons: 1 }), "maliki");
+    expect(shareOf("paternalGrandmother", maliki)).toBe("1/6");
+    expect(shareOf("father", maliki)).toBe("1/6");
+    expectSumsToOne(maliki);
+  });
+
+  it("Hanafi grandfather blocks siblings; jumhur shares", () => {
+    const hanafi = calculate(
+      input({ paternalGrandfather: true, fullBrothers: 2, fullSisters: 1 }),
+      "hanafi",
+    );
+    expect(shareOf("paternalGrandfather", hanafi)).toBe("1");
+    expect(isBlocked("fullBrothers", hanafi)).toBe(true);
+
+    const shafii = calculate(input({ paternalGrandfather: true, fullBrothers: 2 }), "shafii");
+    expect(shareOf("paternalGrandfather", shafii)).toBe("1/3");
+    expect(shareOf("fullBrothers", shafii)).toBe("2/3");
+    expectSumsToOne(shafii);
+  });
+
+  it("Zayd: grandfather with one brother shares half", () => {
+    const r = calculate(input({ paternalGrandfather: true, fullBrothers: 1 }), "maliki");
+    expect(shareOf("paternalGrandfather", r)).toBe("1/2");
+    expect(shareOf("fullBrothers", r)).toBe("1/2");
+  });
+
+  it("Zayd: grandfather is not reduced below one-third", () => {
+    const r = calculate(input({ paternalGrandfather: true, fullBrothers: 3 }), "hanbali");
+    expect(shareOf("paternalGrandfather", r)).toBe("1/3");
+    expect(shareOf("fullBrothers", r)).toBe("2/3");
+  });
+
+  it("Akdariyyah for jumhur, not Hanafi", () => {
+    const inputCase = input({
+      husband: true,
+      mother: true,
+      paternalGrandfather: true,
+      fullSisters: 1,
+    });
+    const hanafi = calculate(inputCase, "hanafi");
+    expect(isBlocked("fullSisters", hanafi)).toBe(true);
+    expect(shareOf("husband", hanafi)).toBe("1/2");
+    expect(shareOf("mother", hanafi)).toBe("1/3");
+    expect(shareOf("paternalGrandfather", hanafi)).toBe("1/6");
+
+    const shafii = calculate(inputCase, "shafii");
+    expect(shareOf("husband", shafii)).toBe("1/3");
+    expect(shareOf("mother", shafii)).toBe("2/9");
+    expect(shareOf("paternalGrandfather", shafii)).toBe("8/27");
+    expect(shareOf("fullSisters", shafii)).toBe("4/27");
+    expectSumsToOne(shafii);
+  });
+
+  it("Mushtaraka for Maliki and Shafi'i, not Hanafi or Hanbali", () => {
+    const inputCase = input({
+      husband: true,
+      mother: true,
+      maternalSiblings: 2,
+      fullBrothers: 1,
+    });
+    const hanafi = calculate(inputCase, "hanafi");
+    expect(shareOf("maternalSiblings", hanafi)).toBe("1/3");
+    expect(isBlocked("fullBrothers", hanafi)).toBe(true);
+
+    const maliki = calculate(inputCase, "maliki");
+    expect(shareOf("husband", maliki)).toBe("1/2");
+    expect(shareOf("mother", maliki)).toBe("1/6");
+    expect(shareOf("maternalSiblings", maliki)).toBe("2/9");
+    expect(shareOf("fullBrothers", maliki)).toBe("1/9");
+    expectSumsToOne(maliki);
+
+    const shafii = calculate(inputCase, "shafii");
+    expect(shareOf("fullBrothers", shafii)).toBe("1/9");
+    const hanbali = calculate(inputCase, "hanbali");
+    expect(isBlocked("fullBrothers", hanbali)).toBe(true);
+  });
+
+  it("Maliki leaves remainder to the treasury; Hanafi applies radd", () => {
+    const hanafi = calculate(input({ mother: true, daughters: 1 }), "hanafi");
+    expect(hanafi.method).toBe("radd");
+    expect(shareOf("daughters", hanafi)).toBe("3/4");
+    const maliki = calculate(input({ mother: true, daughters: 1 }), "maliki");
+    expect(toText(maliki.treasury)).toBe("1/3");
+    expect(shareOf("daughters", maliki)).toBe("1/2");
+    expect(shareOf("mother", maliki)).toBe("1/6");
+    expectSumsToOne(maliki);
+  });
+
+  it("Hanbali does not return radd to a lone spouse", () => {
+    const r = calculate(input({ wives: 1 }), "hanbali");
+    expect(shareOf("wives", r)).toBe("1/4");
+    expect(toText(r.treasury)).toBe("3/4");
+    expectSumsToOne(r);
+  });
+
+  it("daughter's children take remainder as distant kindred in Hanafi", () => {
+    const r = calculate(input({ daughtersSons: 1, daughtersDaughters: 1 }), "hanafi");
+    expect(shareOf("daughtersSons", r)).toBe("2/3");
+    expect(shareOf("daughtersDaughters", r)).toBe("1/3");
+    expectSumsToOne(r);
+  });
+
+  it("Maliki does not give daughter's children the remainder", () => {
+    const r = calculate(input({ daughtersSons: 1 }), "maliki");
+    expect(shareOf("daughtersSons", r)).toBe("0");
+    expect(toText(r.treasury)).toBe("1");
+    expectSumsToOne(r);
+  });
+
+  it("great-grandson takes residue after the spouse", () => {
+    const r = calculate(input({ husband: true, greatGrandsons: 1 }), "hanafi");
+    expect(shareOf("husband", r)).toBe("1/4");
+    expect(shareOf("greatGrandsons", r)).toBe("3/4");
+  });
+
+  it("sums to one across schools for mixed cases", () => {
+    const cases: Partial<HeirInput>[] = [
+      { husband: true, mother: true, paternalGrandfather: true, fullBrothers: 1 },
+      { wives: 1, daughters: 1, paternalGrandfather: true, fullSisters: 1 },
+      { father: true, paternalGrandmother: true, daughters: 2 },
+      { daughtersSons: 2, wives: 1 },
+    ];
+    for (const school of ["hanafi", "maliki", "shafii", "hanbali"] as const) {
+      for (const scenario of cases) {
+        expectSumsToOne(calculate(input(scenario), school));
+      }
+    }
+  });
+});
+

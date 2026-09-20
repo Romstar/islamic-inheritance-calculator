@@ -33,19 +33,18 @@ The app is fully client-side. `next build` writes static HTML, CSS, and JS to
 ## Supported heirs
 
 - Husband or wives (up to 4)
-- Father, mother, paternal grandfather, and grandmothers (paternal and maternal)
-- Sons, daughters, grandsons, and granddaughters (son's line, one generation)
+- Father, mother, paternal grandfather, great-grandfather, and grandmothers
+- Sons, daughters, grandsons, granddaughters, and great-grandchildren in the son's line
+- Daughter's children as distant kindred (except Maliki)
 - Full, paternal half, and maternal (uterine) siblings
 - Brothers' sons, paternal uncles, and their sons
 
 ### Notes on rulings
 
-- You choose a school of thought first. Each school has its own calculator.
-- Share numbers in this version still follow one engine. The paternal grandfather
-  blocks all siblings, as in the Hanafi position.
-- Grandparents and grandchildren cover one generation each.
-- The tool does not cover distant kindred, successive deaths, unborn children,
-  missing persons, or difference of religion.
+- You choose a school of thought first. Each school uses its own share rules.
+- Hanafi treats the grandfather like the father. The other schools share with siblings.
+- The tool covers one successive death after the first result.
+- The tool does not cover unborn children, missing persons, or difference of religion.
 - Read `/scope` for the full list.
 
 ## Development
@@ -82,7 +81,9 @@ python3 -m http.server 4000 --directory out
 The engine lives in `src/lib/faraid/`:
 
 - `fraction.ts` - exact fraction arithmetic
-- `calculator.ts` - the share rules (furud, asaba, 'awl, radd)
+- `calculator.ts` - the share rules (furud, asaba, 'awl, radd, school forks)
+- `schools.ts` - school labels and policy flags
+- `successive.ts` - one later death (munasakha)
 - `estate.ts` - debts, funeral costs, and the one-third will cap
 - `steps.ts` - which questions to show
 - `calculator.test.ts` - tests based on classic examples

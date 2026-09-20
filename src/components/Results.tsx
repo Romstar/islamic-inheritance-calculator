@@ -5,7 +5,8 @@ import { settleEstate } from "@/lib/faraid/estate";
 import { allocateAmounts, formatMoney, parseMoneyField } from "@/lib/faraid/money";
 import { SCHOOLS, type SchoolId } from "@/lib/faraid/schools";
 import type { HeirInput } from "@/lib/faraid/types";
-import { toPercent, toText } from "@/lib/faraid/fraction";
+import { isZero, toPercent, toText } from "@/lib/faraid/fraction";
+import SuccessiveDeath from "./SuccessiveDeath";
 
 const METHOD_LABEL: Record<string, string> = {
   normal: "Standard shares",
@@ -34,7 +35,7 @@ export default function Results({
   funeral: string;
   wasiyyah: string;
 }) {
-  const result = calculate(heirs);
+  const result = calculate(heirs, school);
   const grossField = parseMoneyField(gross);
   const debtsField = parseMoneyField(debts);
   const funeralField = parseMoneyField(funeral);
@@ -52,7 +53,10 @@ export default function Results({
   const showMoney = enteredMoney && estate.gross > 0;
   const amounts = showMoney
     ? allocateAmounts(
-        result.shares.map((share) => share.share),
+        [
+          ...result.shares.map((share) => share.share),
+          ...(isZero(result.treasury) ? [] : [result.treasury]),
+        ],
         estate.distributable,
       )
     : [];
@@ -194,6 +198,27 @@ export default function Results({
                   )}
                 </tr>
               ))}
+              {!isZero(result.treasury) && (
+                <tr className="align-top">
+                  <td className="px-3 py-3">
+                    <span className="block font-medium text-zinc-900">Public treasury</span>
+                    <span className="block text-xs text-zinc-500">
+                      Remainder that this school does not return by radd.
+                    </span>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3 font-mono text-zinc-900">
+                    {toText(result.treasury)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3 text-zinc-700">
+                    {toPercent(result.treasury)}%
+                  </td>
+                  {showMoney && (
+                    <td className="whitespace-nowrap px-3 py-3 text-right text-zinc-900">
+                      {formatMoney(amounts[result.shares.length] ?? 0)}
+                    </td>
+                  )}
+                </tr>
+              )}
             </tbody>
             <tfoot className="bg-zinc-50 text-sm font-semibold text-zinc-900">
               <tr>
@@ -207,6 +232,8 @@ export default function Results({
             </tfoot>
           </table>
         </div>
+
+        <SuccessiveDeath school={school} first={result} />
       </div>
 
       <aside className="space-y-5">

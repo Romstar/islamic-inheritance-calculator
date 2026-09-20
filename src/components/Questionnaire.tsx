@@ -58,12 +58,12 @@ export default function Questionnaire() {
   }, [school, heirs, gross, debts, funeral, wasiyyah, stepId]);
 
   const setHeir = <K extends keyof HeirInput>(key: K, value: HeirInput[K]) => {
-    setHeirs((prev) => pruneHiddenHeirs({ ...prev, [key]: value }));
+    setHeirs((prev) => pruneHiddenHeirs({ ...prev, [key]: value }, school));
   };
 
   const chooseSpouse = (choice: SpouseChoice) => {
     setSpouse(choice);
-    setHeirs((prev) => pruneHiddenHeirs(applySpouseChoice(prev, choice)));
+    setHeirs((prev) => pruneHiddenHeirs(applySpouseChoice(prev, choice), school));
   };
 
   const visible = useMemo(() => visibleStepIds(heirs, school), [heirs, school]);
@@ -103,6 +103,7 @@ export default function Questionnaire() {
 
   const chooseSchool = (next: SchoolId) => {
     setSchool(next);
+    setHeirs((prev) => pruneHiddenHeirs(prev, next));
   };
 
   const copyLink = useCallback(async () => {
@@ -116,8 +117,8 @@ export default function Questionnaire() {
     window.setTimeout(() => setCopied(false), 2000);
   }, []);
 
-  const grandparents = visibleGrandparentFields(heirs);
-  const siblings = visibleSiblingFields(heirs);
+  const grandparents = visibleGrandparentFields(heirs, school ?? "hanafi");
+  const siblings = visibleSiblingFields(heirs, school ?? "hanafi");
   const anyHeir = caseHasHeirs(heirs);
 
   const renderStep = (id: QuestionStepId) => {
@@ -167,19 +168,37 @@ export default function Questionnaire() {
         );
       case "grandchildren":
         return (
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Stepper
-              label="Grandsons (son's sons)"
-              hint={HEIR_HELP.grandsons}
-              value={heirs.grandsons}
-              onChange={(value) => setHeir("grandsons", value)}
-            />
-            <Stepper
-              label="Granddaughters (son's daughters)"
-              hint={HEIR_HELP.granddaughters}
-              value={heirs.granddaughters}
-              onChange={(value) => setHeir("granddaughters", value)}
-            />
+          <div className="space-y-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Stepper
+                label="Grandsons (son's sons)"
+                hint={HEIR_HELP.grandsons}
+                value={heirs.grandsons}
+                onChange={(value) => setHeir("grandsons", value)}
+              />
+              <Stepper
+                label="Granddaughters (son's daughters)"
+                hint={HEIR_HELP.granddaughters}
+                value={heirs.granddaughters}
+                onChange={(value) => setHeir("granddaughters", value)}
+              />
+            </div>
+            {heirs.grandsons === 0 && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Stepper
+                  label="Great-grandsons (son's son's sons)"
+                  hint={HEIR_HELP.greatGrandsons}
+                  value={heirs.greatGrandsons}
+                  onChange={(value) => setHeir("greatGrandsons", value)}
+                />
+                <Stepper
+                  label="Great-granddaughters (son's son's daughters)"
+                  hint={HEIR_HELP.greatGranddaughters}
+                  value={heirs.greatGranddaughters}
+                  onChange={(value) => setHeir("greatGranddaughters", value)}
+                />
+              </div>
+            )}
           </div>
         );
       case "parents":
@@ -210,6 +229,14 @@ export default function Questionnaire() {
                 onChange={(value) => setHeir("paternalGrandfather", value)}
               />
             )}
+            {grandparents.paternalGreatGrandfather && (
+              <Toggle
+                label="Paternal great-grandfather"
+                hint={HEIR_HELP.paternalGreatGrandfather}
+                checked={heirs.paternalGreatGrandfather}
+                onChange={(value) => setHeir("paternalGreatGrandfather", value)}
+              />
+            )}
             {grandparents.paternalGrandmother && (
               <Toggle
                 label="Paternal grandmother (father's mother)"
@@ -231,11 +258,21 @@ export default function Questionnaire() {
       case "siblings":
         return (
           <div className="space-y-3">
-            {heirs.father || heirs.paternalGrandfather ? (
+            {heirs.father ||
+            (school === "hanafi" &&
+              (heirs.paternalGrandfather || heirs.paternalGreatGrandfather)) ? (
               <p className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-600">
-                These siblings do not inherit while the father or paternal grandfather is alive.
+                These siblings do not inherit while the father
+                {school === "hanafi" ? " or paternal grandfather" : ""} is alive.
                 Two or more siblings still reduce the mother&apos;s share from one-third to
                 one-sixth.
+              </p>
+            ) : school &&
+              school !== "hanafi" &&
+              (heirs.paternalGrandfather || heirs.paternalGreatGrandfather) ? (
+              <p className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-600">
+                This school shares residue between the grandfather and siblings (Zayd&apos;s
+                method).
               </p>
             ) : null}
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -320,6 +357,23 @@ export default function Questionnaire() {
               hint={HEIR_HELP.paternalCousins}
               value={heirs.paternalCousins}
               onChange={(value) => setHeir("paternalCousins", value)}
+            />
+          </div>
+        );
+      case "kindred":
+        return (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Stepper
+              label="Daughter's sons"
+              hint={HEIR_HELP.daughtersSons}
+              value={heirs.daughtersSons}
+              onChange={(value) => setHeir("daughtersSons", value)}
+            />
+            <Stepper
+              label="Daughter's daughters"
+              hint={HEIR_HELP.daughtersDaughters}
+              value={heirs.daughtersDaughters}
+              onChange={(value) => setHeir("daughtersDaughters", value)}
             />
           </div>
         );
