@@ -20,12 +20,20 @@ export default function SchoolPicker({
             onClick={() => onChange(school.id)}
             className={`cursor-pointer rounded-xl border px-4 py-4 text-left transition-colors ${
               selected
-                ? "border-emerald-500 bg-emerald-50"
-                : "border-zinc-200 bg-white hover:border-zinc-300"
+                ? "border-emerald-600 bg-emerald-600 hover:bg-emerald-700"
+                : "border-zinc-200 bg-white hover:border-emerald-500 hover:bg-emerald-50"
             }`}
           >
-            <span className="block text-base font-semibold text-zinc-900">{school.label}</span>
-            <span className="mt-1 block text-sm text-zinc-500">{school.summary}</span>
+            <span
+              className={`block text-base font-semibold ${selected ? "text-white" : "text-zinc-900"}`}
+            >
+              {school.label}
+            </span>
+            <span
+              className={`mt-1 block text-sm ${selected ? "text-emerald-100" : "text-zinc-500"}`}
+            >
+              {school.summary}
+            </span>
           </button>
         );
       })}
