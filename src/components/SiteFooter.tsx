@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GUIDE_PAGES, HUB_PAGE, SCOPE_PAGE } from "@/lib/guides";
+import { SourceLinks } from "@/components/SourceLinks";
 
 const footerLinks = [
   { href: "/", label: "Calculator" },
@@ -26,6 +27,7 @@ export default function SiteFooter() {
         <p className="text-xs text-zinc-500">
           For education only. This is not a religious or legal ruling.
         </p>
+        <SourceLinks ids={["quran-4-13", "islamqa-10447"]} />
       </div>
     </footer>
   );

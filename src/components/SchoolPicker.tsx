@@ -1,4 +1,5 @@
 import { SCHOOL_LIST, type SchoolId } from "@/lib/faraid/schools";
+import { SourceLinks } from "@/components/SourceLinks";
 
 export default function SchoolPicker({
   value,
@@ -28,6 +29,10 @@ export default function SchoolPicker({
           </button>
         );
       })}
+      <SourceLinks
+        className="sm:col-span-2"
+        ids={["islamqa-140167", "islamqa-160948", "islamqa-225165"]}
+      />
     </div>
   );
 }

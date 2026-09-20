@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CalculatorApp from "@/components/CalculatorApp";
 import JsonLd from "@/components/JsonLd";
+import { SourceLinks } from "@/components/SourceLinks";
 import { GUIDE_PAGES, HOME_PAGE } from "@/lib/guides";
 import { getSiteUrl, LOGO_PATH, OG_IMAGE_PATH, SITE_NAME } from "@/lib/site";
 
@@ -67,6 +68,11 @@ export default function Home() {
           relatives. The tool works out each heir&apos;s share, then shows the fraction,
           percentage, and amount. Debts, funeral costs, and an optional will come out first.
         </p>
+        <p className="mt-2 max-w-3xl">
+          <SourceLinks
+            ids={["quran-4-11", "quran-4-12", "bukhari-6732", "islamqa-200127", "bukhari-2742"]}
+          />
+        </p>
       </div>
       <main className="w-full flex-1 px-4 pb-8 sm:px-10 lg:px-16">
         <CalculatorApp />
@@ -77,6 +83,7 @@ export default function Home() {
             shares, blocking, &apos;awl, radd, and the will. The pages are for education, not a
             ruling.
           </p>
+          <SourceLinks ids={["quran-4-7", "islamqa-225165", "islamqa-10447"]} />
           <ul className="grid gap-3 sm:grid-cols-2">
             {GUIDE_PAGES.map((page) => (
               <li key={page.href}>

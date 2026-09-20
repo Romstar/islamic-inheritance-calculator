@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ArticlePage from "@/components/ArticlePage";
 import JsonLd from "@/components/JsonLd";
+import { SourceLinks } from "@/components/SourceLinks";
 import { GUIDE_PAGES, HUB_PAGE } from "@/lib/guides";
 import { pageMetadata } from "@/lib/seo";
 import { getSiteUrl, SITE_NAME } from "@/lib/site";
@@ -46,6 +47,7 @@ export default function GuidesPage() {
         </Link>
         .
       </p>
+      <SourceLinks ids={["quran-4-13", "islamqa-10447", "islamqa-225165"]} />
     </ArticlePage>
   );
 }
