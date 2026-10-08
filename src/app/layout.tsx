@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import JsonLd from "@/components/JsonLd";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
@@ -89,6 +90,18 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <Script
+          id="a-tracker"
+          src="https://atribusi.com/tracker/tracker.min.js"
+          strategy="afterInteractive"
+          async
+          data-api-key="A-BACBC4BB4B"
+          data-api-host="https://app.atribusi.com/api"
+          data-domain="musliminheritancecalculator.com"
+          data-session-replay="true"
+          data-track-local-host="false"
+          data-scl="false"
+        />
         <JsonLd data={siteGraphJsonLd()} />
         <SiteHeader />
         <div className="flex flex-1 flex-col">{children}</div>
