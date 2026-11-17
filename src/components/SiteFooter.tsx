@@ -27,6 +27,16 @@ export default function SiteFooter() {
         <p className="text-xs text-zinc-500">
           For education only. This is not a religious or legal ruling.
         </p>
+        <p className="text-xs text-zinc-500">
+          <a
+            href="https://shouldiuse.io"
+            className="font-medium underline-offset-2 hover:underline"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            shouldiuse.io
+          </a>
+        </p>
         <SourceLinks ids={["quran-4-13", "islamqa-10447"]} />
       </div>
     </footer>
